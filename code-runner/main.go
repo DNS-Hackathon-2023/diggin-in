@@ -48,7 +48,7 @@ func anyToStarlark(
 
 func execDigVerbose(thread *starlark.Thread, domain string) (starlark.Value, error) {
 	dig := exec.Command("dig", domain)
-	jc := exec.Command("jc", "dig")
+	jc := exec.Command("jc", "--dig")
 
 	rx, tx := io.Pipe()
 	dig.Stdout = tx
