@@ -216,17 +216,6 @@ func apiDig(
 	}
 
 	// Run dig
-	/*
-		result, err := execDig(domain)
-		if err != nil {
-			return nil, err
-		}
-
-		res, err := anyToStarlark(thread, result)
-		if err != nil {
-			return nil, err
-		}
-	*/
 	res, err := execDigVerbose(thread, domain)
 	if err != nil {
 		return nil, err
