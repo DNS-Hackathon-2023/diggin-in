@@ -46,10 +46,16 @@ A domain specific language that can run on the measurement platform to glue all 
 
 # What we tried
 
-## skylark
-We found the skylark language which is a minimal set of python. It addresses a few things:
-* security concerns/sandboxed
-* it is python like. so expectation is that this is easy for whoever writes this code
+## Starlark
+
+We found the Starlark language which is a subset of Python. It addresses a few things:
+
+* sandboxed: we can restrict the library functions so scripts written in Starlark can only do what we permit
+
+* like Python, so we hope it is more accessible to people writing scripts than alternatives such as Tcl, Lua, Guile, ...
+
+* Starlark implementations exist in Java and Go (from Google), and Rust (from Facebook); it was designed for the Bazel and Buck build systems
+
 
 # By-catch
 You could use something similar to this but without the measurement code, ie. just define the data reduction step
