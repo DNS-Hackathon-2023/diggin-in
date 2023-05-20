@@ -7,6 +7,9 @@ def propagation(domain, ref_serial, max_attempts=10, sleep_time=15):
     # TODO: Use the name servers or the addresses?
     auth_ns = measure.dig(domain)
 
+    # Save auth_ns in the key/value storage for the next run?
+    state.set("auth_ns", auth_ns)
+
     # XXX: Assuming this is available
     t0 = time.time()
 
