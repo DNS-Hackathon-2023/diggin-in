@@ -157,8 +157,8 @@ func apiCollect(
 	return starlark.None, nil
 }
 
-func execDigVerbose(thread *starlark.Thread, domain string) (starlark.Value, error) {
-	dig := exec.Command("dig", domain)
+func execDigVerbose(thread *starlark.Thread, domain string, rrtype string) (starlark.Value, error) {
+	dig := exec.Command("dig", domain, rrtype)
 	jc := exec.Command("jc", "--dig")
 
 	rx, tx := io.Pipe()
@@ -207,8 +207,9 @@ func apiDig(
 	// Parse arguments
 	var (
 		domain string
+		rrtype string = "A"
 	)
-	if err := starlark.UnpackArgs("dig", args, kwargs, "domain", &domain); err != nil {
+	if err := starlark.UnpackArgs("dig", args, kwargs, "domain", &domain, "rrtype?", &rrtype); err != nil {
 		return nil, err
 	}
 
@@ -224,7 +225,7 @@ func apiDig(
 			return nil, err
 		}
 	*/
-	res, err := execDigVerbose(thread, domain)
+	res, err := execDigVerbose(thread, domain, rrtype)
 	if err != nil {
 		return nil, err
 	}
