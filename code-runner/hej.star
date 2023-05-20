@@ -1,6 +1,5 @@
 
 def loop():
-
     results = measure.dig("hannig.cc")
 
     foo = state.get("foo", 23)
@@ -13,7 +12,8 @@ def loop():
     foo += 1
     state.set("foo", foo)
 
-    collect("hannig.cc", results)
+    collect(results)
+    collect("sometag", results)
 
     return 42
 

@@ -40,13 +40,13 @@ func starlibLoader(module string) (dict starlark.StringDict, err error) {
 	return nil, fmt.Errorf("invalid module %q", module)
 }
 
-func starlibModule(name string) (*starlarkstruct.Module) {
+func starlibModule(name string) *starlarkstruct.Module {
 	dict, err := starlibLoader(name)
 	if err != nil {
-                log.Fatalf("error: %v", err)
+		log.Fatalf("error: %v", err)
 	}
 	return &starlarkstruct.Module{
-		Name: name,
+		Name:    name,
 		Members: dict,
 	}
 }
@@ -86,6 +86,7 @@ type Result struct {
 	Timestamp time.Time       `json:"timestamp"`
 	ProbeID   string          `json:"probe_id"`
 	Result    json.RawMessage `json:"result"`
+	Tag       string          `json:"tag"`
 }
 
 // Collect: write data to output file
@@ -98,10 +99,18 @@ func apiCollect(
 	// Get file from thread
 	file := thread.Local("outputFile").(*os.File)
 
-	// Encode args as json
+	encodeArgs := starlark.Tuple{args}
+	tag := ""
+	if args.Len() == 1 {
+		encodeArgs = starlark.Tuple{args.Index(0)}
+	} else if args.Len() == 2 {
+		encodeArgs = starlark.Tuple{args.Index(1)}
+		tag = args.Index(0).(starlark.String).GoString()
+	}
 
+	// Encode args as json
 	encode := slJSON.Module.Members["encode"].(*starlark.Builtin)
-	encodeRes, err := encode.CallInternal(thread, starlark.Tuple{args}, nil)
+	encodeRes, err := encode.CallInternal(thread, encodeArgs, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -113,10 +122,8 @@ func apiCollect(
 		ProbeID:   probeId,
 		Timestamp: time.Now().UTC(),
 		Result:    []byte(data),
+		Tag:       tag,
 	}
-
-	// Encode to JSON
-
 	encoded, err := json.Marshal(result)
 	if err != nil {
 		return nil, err
@@ -293,7 +300,7 @@ func main() {
 
 	env := starlark.StringDict{
 		"measure": modMeasure,
-		"re": starlibModule("re"),
+		"re":      starlibModule("re"),
 		"state":   modState,
 		"collect": starlark.NewBuiltin("collect", apiCollect),
 	}
