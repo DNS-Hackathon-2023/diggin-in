@@ -240,8 +240,14 @@ func apiStateSet(
 		return nil, err
 	}
 
+	state := thread.Local("state")
+	if state == nil {
+		state = make(map[string]interface{})
+	}
+	state.(map[string]interface{})[key] = value
+
 	// Set thread local value
-	thread.SetLocal(key, value)
+	thread.SetLocal("state", state)
 
 	return starlark.None, nil
 }
@@ -263,7 +269,8 @@ func apiStateGet(
 	}
 
 	// Get thread local value
-	value := thread.Local(key)
+	state := thread.Local("state")
+	value := state.(map[string]interface{})[key]
 	if value == nil {
 		return defaultValue, nil
 	}
@@ -294,6 +301,7 @@ func main() {
 	// Execute Starlark program in a file.
 	thread := &starlark.Thread{Name: "main"}
 	thread.SetLocal("outputFile", file)
+	thread.SetLocal("state", map[string]interface{}{})
 
 	// Globals
 	var modMeasure = &starlarkstruct.Module{
