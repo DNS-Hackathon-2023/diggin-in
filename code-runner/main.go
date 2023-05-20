@@ -7,7 +7,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/qri-io/starlib/re"
+	slre "github.com/qri-io/starlib/re"
+	sltime "github.com/qri-io/starlib/time"
 
 	slJSON "go.starlark.net/lib/json"
 	"go.starlark.net/starlark"
@@ -24,6 +25,28 @@ var (
 	scriptFile string
 	waitSec    int
 )
+
+func starlibLoader(module string) (dict starlark.StringDict, err error) {
+	switch module {
+	case "time":
+		return starlark.StringDict{"time": sltime.Module}, nil
+	case "re":
+		return slre.LoadModule()
+	}
+
+	return nil, fmt.Errorf("invalid module %q", module)
+}
+
+func starlibModule(name string) (*starlarkstruct.Module) {
+	dict, err := starlibLoader(name)
+	if err != nil {
+                log.Fatalf("error: %v", err)
+	}
+	return &starlarkstruct.Module{
+		Name: name,
+		Members: dict,
+	}
+}
 
 func init() {
 	flag.StringVar(&scriptFile, "script", "", "Script file to execute")
@@ -187,15 +210,6 @@ func main() {
 		},
 	}
 
-	reDict, err := re.LoadModule()
-	if err != nil {
-                log.Fatalf("error: %v", err)
-	}
-	var modRe = &starlarkstruct.Module{
-		Name: "re",
-		Members: reDict,
-	}
-
 	var modState = &starlarkstruct.Module{
 		Name: "state",
 		Members: starlark.StringDict{
@@ -206,7 +220,7 @@ func main() {
 
 	env := starlark.StringDict{
 		"measure": modMeasure,
-		"re": modRe,
+		"re": starlibModule("re"),
 		"state":   modState,
 	}
 
