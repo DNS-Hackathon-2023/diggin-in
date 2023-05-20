@@ -9,6 +9,8 @@ require (
 )
 
 require (
+	github.com/paulmach/orb v0.1.5 // indirect
 	github.com/pkg/errors v0.8.1 // indirect
 	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
+	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
