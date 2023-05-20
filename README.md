@@ -28,6 +28,14 @@ query an instrumented server from a set of resolvers to figure out if it does qn
 
 Raffaele use-case: useful for domains under attack
 
+### Define an experiment to define where an authorative nameserver operator might need to place a new anycast node
+
+From Vicky Risk
+
+### Distributed monitoring for specific domain record
+
+From Vicky Risk, to quickly identify if a nameserver address has been changed or not
+
 
 # Scope
 * you need to measure from many vantage points
