@@ -161,16 +161,6 @@ func main() {
 	thread := &starlark.Thread{Name: "main"}
 
 	// Globals
-	/*
-		env := starlark.StringDict{
-			"measure": starlarkstruct.FromStringDict(
-				starlark.String("measure"),
-				starlark.StringDict{
-					"dig": starlark.NewBuiltin("dig", apiDig),
-				}),
-		}
-	*/
-
 	var modMeasure = &starlarkstruct.Module{
 		Name: "measure",
 		Members: starlark.StringDict{
