@@ -3,10 +3,7 @@ def loop():
 
     results = measure.dig("hannig.cc")
 
-
-    foo = state.get("foo")
-    if not foo:
-        foo = 1
+    foo = state.get("foo", 23)
 
     print("Current state:", foo)
 

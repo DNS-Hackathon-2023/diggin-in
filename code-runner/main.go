@@ -134,16 +134,17 @@ func apiStateGet(
 ) (starlark.Value, error) {
 	// Parse arguments
 	var (
-		key string
+		key          string
+		defaultValue starlark.Value = starlark.None
 	)
-	if err := starlark.UnpackArgs("get", args, kwargs, "key", &key); err != nil {
+	if err := starlark.UnpackArgs("get", args, kwargs, "key", &key, "default?", &defaultValue); err != nil {
 		return nil, err
 	}
 
 	// Get thread local value
 	value := thread.Local(key)
 	if value == nil {
-		return starlark.None, nil
+		return defaultValue, nil
 	}
 
 	return value.(starlark.Value), nil
