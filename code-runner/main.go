@@ -11,14 +11,14 @@ import (
 	sldataframe "github.com/qri-io/starlib/dataframe"
 	slbase64 "github.com/qri-io/starlib/encoding/base64"
 	slcsv "github.com/qri-io/starlib/encoding/csv"
-	slyaml "github.com/qri-io/starlib/encoding/yaml"
-	slgeo "github.com/qri-io/starlib/geo"
 	slhash "github.com/qri-io/starlib/hash"
-	slmath "github.com/qri-io/starlib/math"
 	slre "github.com/qri-io/starlib/re"
-	sltime "github.com/qri-io/starlib/time"
+	slyaml "github.com/qri-io/starlib/encoding/yaml"
 
 	slJSON "go.starlark.net/lib/json"
+	slmath "go.starlark.net/lib/math"
+	sltime "go.starlark.net/lib/time"
+
 	"go.starlark.net/starlark"
 	"go.starlark.net/starlarkstruct"
 
@@ -45,8 +45,6 @@ func starlibLoader(module string) (dict starlark.StringDict, err error) {
 		return slcsv.LoadModule()
 	case "dataframe":
 		return starlark.StringDict{"dataframe": sldataframe.Module}, nil
-	case "geo":
-		return slgeo.LoadModule()
 	case "hash":
 		return slhash.LoadModule()
 	case "math":
@@ -329,7 +327,6 @@ func main() {
 		"base64",
 		"csv",
 		"dataframe",
-		"geo",
 		"hash",
 		"math",
 		"re",
