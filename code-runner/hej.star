@@ -12,8 +12,8 @@ def loop():
     foo += 1
     state.set("foo", foo)
 
-    collect(results)
-    collect("sometag", results)
+    # collect(results)
+    collect("hannig.cc", results)
 
     return 42
 

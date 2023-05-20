@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"strings"
 
 	sldataframe "github.com/qri-io/starlib/dataframe"
 	slbase64 "github.com/qri-io/starlib/encoding/base64"
@@ -157,8 +158,10 @@ func apiCollect(
 	return starlark.None, nil
 }
 
-func execDigVerbose(thread *starlark.Thread, domain string) (starlark.Value, error) {
-	dig := exec.Command("dig", domain)
+func execDigVerbose(thread *starlark.Thread, args string) (starlark.Value, error) {
+	argv := strings.Split(args, " ")
+
+	dig := exec.Command("dig", argv...)
 	jc := exec.Command("jc", "--dig")
 
 	rx, tx := io.Pipe()
