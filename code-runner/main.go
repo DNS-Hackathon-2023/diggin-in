@@ -5,9 +5,15 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
+
+	slre "github.com/qri-io/starlib/re"
+	sltime "github.com/qri-io/starlib/time"
+
 	slJSON "go.starlark.net/lib/json"
 	"go.starlark.net/starlark"
 	"go.starlark.net/starlarkstruct"
+
 	"gopkg.in/yaml.v3"
 	"io"
 	"os"
@@ -22,6 +28,28 @@ var (
 	outFile    string
 	probeId    string
 )
+
+func starlibLoader(module string) (dict starlark.StringDict, err error) {
+	switch module {
+	case "time":
+		return starlark.StringDict{"time": sltime.Module}, nil
+	case "re":
+		return slre.LoadModule()
+	}
+
+	return nil, fmt.Errorf("invalid module %q", module)
+}
+
+func starlibModule(name string) (*starlarkstruct.Module) {
+	dict, err := starlibLoader(name)
+	if err != nil {
+                log.Fatalf("error: %v", err)
+	}
+	return &starlarkstruct.Module{
+		Name: name,
+		Members: dict,
+	}
+}
 
 func init() {
 	// Get current hostname
@@ -265,14 +293,14 @@ func main() {
 
 	env := starlark.StringDict{
 		"measure": modMeasure,
+		"re": starlibModule("re"),
 		"state":   modState,
 		"collect": starlark.NewBuiltin("collect", apiCollect),
 	}
 
 	globals, err := starlark.ExecFile(thread, scriptFile, nil, env)
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatalf("error: %v", err)
 	}
 
 	// Retrieve a module global.
@@ -283,7 +311,7 @@ func main() {
 		fmt.Println("executing loop")
 		_, err := starlark.Call(thread, main, nil, nil)
 		if err != nil {
-			panic(err)
+			log.Fatalf("error: %v", err)
 		}
 
 		time.Sleep(time.Duration(waitSec) * time.Second)
