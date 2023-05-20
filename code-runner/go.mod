@@ -1,4 +1,4 @@
-module github.com/ripe-dns-hackathon/remote-probe
+module github.com/DNS-Hackathon-2023/diggin-in/code-runner
 
 go 1.20
 
