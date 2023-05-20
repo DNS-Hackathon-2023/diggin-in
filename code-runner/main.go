@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"flag"
 	"fmt"
 	slJSON "go.starlark.net/lib/json"
 	"go.starlark.net/starlark"
@@ -12,6 +13,17 @@ import (
 	"os/exec"
 	"time"
 )
+
+// Cli Flags
+var (
+	scriptFile string
+	waitSec    int
+)
+
+func init() {
+	flag.StringVar(&scriptFile, "script", "", "Script file to execute")
+	flag.IntVar(&waitSec, "wait", 10, "Wait time between executions")
+}
 
 // This is hack and very inefficient
 func anyToStarlark(
@@ -157,6 +169,8 @@ func apiStateGet(
 }
 
 func main() {
+	flag.Parse()
+
 	// Execute Starlark program in a file.
 	thread := &starlark.Thread{Name: "main"}
 
@@ -181,9 +195,16 @@ func main() {
 		"state":   modState,
 	}
 
-	globals, err := starlark.ExecFile(thread, "hej.star", nil, env)
+	if scriptFile == "" {
+		fmt.Println("No script file specified")
+		flag.Usage()
+		return
+	}
+
+	globals, err := starlark.ExecFile(thread, scriptFile, nil, env)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return
 	}
 
 	// Retrieve a module global.
@@ -197,6 +218,6 @@ func main() {
 			panic(err)
 		}
 
-		time.Sleep(10 * time.Second)
+		time.Sleep(time.Duration(waitSec) * time.Second)
 	}
 }
