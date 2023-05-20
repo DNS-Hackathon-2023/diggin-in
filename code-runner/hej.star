@@ -8,11 +8,9 @@ def loop():
     print("Current state:", foo)
 
     for answer in results:
-        print(answer["message"])
-
+        print(answer)
 
     foo += 1
-
     state.set("foo", foo)
 
     return 42
