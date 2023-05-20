@@ -5,9 +5,14 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"log"
+
+	"github.com/qri-io/starlib/re"
+
 	slJSON "go.starlark.net/lib/json"
 	"go.starlark.net/starlark"
 	"go.starlark.net/starlarkstruct"
+
 	"gopkg.in/yaml.v3"
 	"io"
 	"os/exec"
@@ -182,6 +187,15 @@ func main() {
 		},
 	}
 
+	reDict, err := re.LoadModule()
+	if err != nil {
+                log.Fatalf("error: %v", err)
+	}
+	var modRe = &starlarkstruct.Module{
+		Name: "re",
+		Members: reDict,
+	}
+
 	var modState = &starlarkstruct.Module{
 		Name: "state",
 		Members: starlark.StringDict{
@@ -192,6 +206,7 @@ func main() {
 
 	env := starlark.StringDict{
 		"measure": modMeasure,
+		"re": modRe,
 		"state":   modState,
 	}
 
@@ -203,8 +218,7 @@ func main() {
 
 	globals, err := starlark.ExecFile(thread, scriptFile, nil, env)
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatalf("error: %v", err)
 	}
 
 	// Retrieve a module global.
@@ -215,7 +229,7 @@ func main() {
 		fmt.Println("executing loop")
 		_, err := starlark.Call(thread, main, nil, nil)
 		if err != nil {
-			panic(err)
+			log.Fatalf("error: %v", err)
 		}
 
 		time.Sleep(time.Duration(waitSec) * time.Second)
