@@ -13,6 +13,8 @@ def loop():
     foo += 1
     state.set("foo", foo)
 
+    collect("hannig.cc", results)
+
     return 42
 
 

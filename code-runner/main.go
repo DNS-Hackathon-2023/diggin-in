@@ -10,6 +10,7 @@ import (
 	"go.starlark.net/starlarkstruct"
 	"gopkg.in/yaml.v3"
 	"io"
+	"os"
 	"os/exec"
 	"time"
 )
@@ -18,11 +19,18 @@ import (
 var (
 	scriptFile string
 	waitSec    int
+	outFile    string
+	probeId    string
 )
 
 func init() {
+	// Get current hostname
+	hostname, _ := os.Hostname()
+
 	flag.StringVar(&scriptFile, "script", "", "Script file to execute")
 	flag.IntVar(&waitSec, "wait", 10, "Wait time between executions")
+	flag.StringVar(&outFile, "out", "", "Output file, gets truncated on start")
+	flag.StringVar(&probeId, "probeid", hostname, "Probe ID")
 }
 
 // This is hack and very inefficient
@@ -44,6 +52,53 @@ func anyToStarlark(
 		return nil, err
 	}
 	return res, nil
+}
+
+type Result struct {
+	Timestamp time.Time       `json:"timestamp"`
+	ProbeID   string          `json:"probe_id"`
+	Result    json.RawMessage `json:"result"`
+}
+
+// Collect: write data to output file
+func apiCollect(
+	thread *starlark.Thread,
+	fn *starlark.Builtin,
+	args starlark.Tuple,
+	kwargs []starlark.Tuple,
+) (starlark.Value, error) {
+	// Get file from thread
+	file := thread.Local("outputFile").(*os.File)
+
+	// Encode args as json
+
+	encode := slJSON.Module.Members["encode"].(*starlark.Builtin)
+	encodeRes, err := encode.CallInternal(thread, starlark.Tuple{args}, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	data := encodeRes.(starlark.String).GoString()
+
+	// Encode payload
+	result := Result{
+		ProbeID:   probeId,
+		Timestamp: time.Now().UTC(),
+		Result:    []byte(data),
+	}
+
+	// Encode to JSON
+
+	encoded, err := json.Marshal(result)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := file.Write(encoded); err != nil {
+		return nil, err
+	}
+	file.WriteString("\n")
+
+	return starlark.None, nil
 }
 
 func execDigVerbose(thread *starlark.Thread, domain string) (starlark.Value, error) {
@@ -170,9 +225,27 @@ func apiStateGet(
 
 func main() {
 	flag.Parse()
+	if scriptFile == "" {
+		fmt.Println("No script file specified")
+		flag.Usage()
+		return
+	}
+
+	if outFile == "" {
+		fmt.Println("Output filename missing")
+		flag.Usage()
+		return
+	}
+	file, err := os.Create(outFile)
+	if err != nil {
+		fmt.Println("Failed to open output file:", err)
+		return
+	}
+	defer file.Close()
 
 	// Execute Starlark program in a file.
 	thread := &starlark.Thread{Name: "main"}
+	thread.SetLocal("outputFile", file)
 
 	// Globals
 	var modMeasure = &starlarkstruct.Module{
@@ -193,12 +266,7 @@ func main() {
 	env := starlark.StringDict{
 		"measure": modMeasure,
 		"state":   modState,
-	}
-
-	if scriptFile == "" {
-		fmt.Println("No script file specified")
-		flag.Usage()
-		return
+		"collect": starlark.NewBuiltin("collect", apiCollect),
 	}
 
 	globals, err := starlark.ExecFile(thread, scriptFile, nil, env)
