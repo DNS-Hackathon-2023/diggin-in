@@ -34,11 +34,21 @@ Raffaele use-case: useful for domains under attack
 * DNS measurement primitives are available
 * results storage is available
 * needs to run in a constrained environment
+* security is a major concern (measurement nodes typically are "somebody elses computer")
 * NOT BE A BOTNET
+
+# Users
+Small set of people who will write this type of scripts
+Much bigger set of people who will benefit from the availability of these types of scripts for DNS measurements
 
 # Solution
 A domain specific language that can run on the measurement platform to glue all of this together
 
 # What we tried
 * found the skylark language which is a minimal set of python
+** addresses security concerns/sandboxed
+** python like -> expectation is that this is easy for whoever writes this code
 * dig + dig-json
+
+# By-catch
+You could use something similar to this but without the measurement code, ie. just define the data reduction step
