@@ -35,13 +35,14 @@ def loop():
             
             # If answer is authoriative provide it back
             if "aa" in dns_results[0]['flags']:
-                print(dns_results)  # Print the DNS result if the flag is present
+                # print(dns_results)  # Print the DNS result if the flag is present
+                collect(dns_results)  # Collect the DNS result
     
     return None  # Return None if the loop completes without finding a result
 
 
 def extract_ns_servers(dns_results):
-    print(dns_results)
+    # print(dns_results)
     
     # Check if there is only one DNS result
     if len(dns_results) == 1:
