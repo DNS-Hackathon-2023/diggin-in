@@ -45,10 +45,11 @@ Much bigger set of people who will benefit from the availability of these types 
 A domain specific language that can run on the measurement platform to glue all of this together
 
 # What we tried
-* found the skylark language which is a minimal set of python
-** addresses security concerns/sandboxed
-** python like -> expectation is that this is easy for whoever writes this code
-* dig + dig-json
+
+## skylark
+We found the skylark language which is a minimal set of python. It addresses a few things:
+* security concerns/sandboxed
+* it is python like. so expectation is that this is easy for whoever writes this code
 
 # By-catch
 You could use something similar to this but without the measurement code, ie. just define the data reduction step
