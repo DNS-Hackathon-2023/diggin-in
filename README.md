@@ -14,4 +14,31 @@ We'd like to define a language that will describe how to do some high level meas
 
 ### Monitor serial number changes
 
-### 
+### atlas-shruggd (example: do dns resolution from a different root-server system)
+
+### dnsthought 
+
+does a lot of dns server capabilities measurements. For instance measure DNSSEC algorithm compatibility by comparing a broken zone to a correct one for a given DNSSEC algorithm
+
+### dns minimisation research
+
+query an instrumented server from a set of resolvers to figure out if it does qname min (via TXT fetch on an instrumented server). Then do you further experiments only for the set of resolvers that do qname min
+
+### find all possible resolution paths for a domain
+
+Raffaele use-case: useful for domains under attack
+
+
+# Scope
+* you need to measure from many vantage points
+* DNS measurement primitives are available
+* results storage is available
+* needs to run in a constrained environment
+* NOT BE A BOTNET
+
+# Solution
+A domain specific language that can run on the measurement platform to glue all of this together
+
+# What we tried
+* found the skylark language which is a minimal set of python
+* dig + dig-json
