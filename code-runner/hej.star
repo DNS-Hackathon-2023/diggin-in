@@ -1,20 +1,8 @@
-
 def loop():
-    results = measure.dig("hannig.cc")
-
-    foo = state.get("foo", 23)
-
-    print("Current state:", foo)
-
-    for answer in results:
-        print(answer)
-
-    foo += 1
-    state.set("foo", foo)
-
-    # collect(results)
-    collect("hannig.cc", results)
-
-    return 42
-
-
+  state.set("foo", state.get("foo", 23) + 1)
+  data = {
+    "foo": 42,
+    "msg": "enjoy ripe!",
+    "state": state.get("foo"),
+  }
+  collect("hello ripe!")
