@@ -39,13 +39,12 @@ def parse_cli_arguments():
     return domain, q_type, q_class, local_server
 
 def run_command(command):
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = process.communicate()
     return output.decode().strip()
 
 domain, q_type, q_class, local_server = parse_cli_arguments()
-evtdig_command = ("evtdig --query {} --type {} --class {} {}".format(domain,q_type, q_class, local_server))
-
+evtdig_command = ["evtdig","--query",domain,"--type",str(q_type),"--class",str(q_class),local_server]
 evtdig_output = run_command(evtdig_command)
 
 
