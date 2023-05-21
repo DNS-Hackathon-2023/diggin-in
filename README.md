@@ -1,4 +1,4 @@
-# Digging In
+# DIG-alicious
 
 A tongue in cheek word play to define a Domain Specific Language for meta measurements in the DNS (for now)
 
