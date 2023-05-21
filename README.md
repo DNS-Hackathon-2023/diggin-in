@@ -32,6 +32,8 @@ Raffaele use-case: useful for domains under attack
 
 From Vicky Risk
 
+See also existing research by SIDN https://github.com/SIDN/BGP-Anycast-Tuner
+
 ### Distributed monitoring for specific domain record
 
 From Vicky Risk, to quickly identify if a nameserver address has been changed or not
