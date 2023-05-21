@@ -1,4 +1,4 @@
-module github.com/ripe-dns-hackathon/diggin-in/remote-runner
+module github.com/ripe-dns-hackathon/diggin-in/remote-server
 
 go 1.20
 
