@@ -1,0 +1,108 @@
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.app {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+#editor {
+  flex: 1;
+  height: 100%;
+}
+
+.app .ctrl {
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: 44.3333%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #222;
+}
+
+.cm-editor {
+  height: 100%;
+  font-size: 1.15rem;
+}
+
+.ctrl .actions {
+  background: #111;
+  padding: 20px;
+}
+
+.actions button {
+  background: #49b11e;
+  display: block;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  color: white;
+  text-shadow: 0 -1px 0px #444;
+}
+
+.actions button:active {
+  background: #3a8016;
+}
+
+.result {
+  background: #444;
+  border-radius: 8px;
+  margin: 10px;
+  padding: 5px;
+}
+
+.result .header {
+  padding: 5px;
+  background: #ddd;
+  font-family: monospace;
+  font-size: 1rem;
+  border-radius: 5px;
+  display: flex;
+}
+
+.result .header .timestamp {
+  flex: 0 1; 
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+.result .header .tag {
+  flex: 1;
+  color: #a1489a;
+}
+
+.result .header .probeid {
+  font-weight: bold;
+  flex: 0 1;
+  padding: 0 10px;
+  color: #a1489a;
+}
+
+.result .content {
+  color: white;
+  padding: 0px 10px;
+  font-size: 1rem;
+}
+
+
+.app .output {
+  overflow-y: auto;
+  height: 100%;
+}
+

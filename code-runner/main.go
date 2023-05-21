@@ -11,9 +11,9 @@ import (
 	sldataframe "github.com/qri-io/starlib/dataframe"
 	slbase64 "github.com/qri-io/starlib/encoding/base64"
 	slcsv "github.com/qri-io/starlib/encoding/csv"
+	slyaml "github.com/qri-io/starlib/encoding/yaml"
 	slhash "github.com/qri-io/starlib/hash"
 	slre "github.com/qri-io/starlib/re"
-	slyaml "github.com/qri-io/starlib/encoding/yaml"
 
 	slJSON "go.starlark.net/lib/json"
 	slmath "go.starlark.net/lib/math"
@@ -22,11 +22,12 @@ import (
 	"go.starlark.net/starlark"
 	"go.starlark.net/starlarkstruct"
 
-	"gopkg.in/yaml.v3"
 	"io"
 	"os"
 	"os/exec"
 	"time"
+
+	"gopkg.in/yaml.v3"
 )
 
 // Cli Flags
@@ -35,6 +36,7 @@ var (
 	waitSec    int
 	outFile    string
 	probeId    string
+	stdout     bool
 )
 
 func starlibLoader(module string) (dict starlark.StringDict, err error) {
@@ -79,6 +81,7 @@ func init() {
 	flag.IntVar(&waitSec, "wait", 10, "Wait time between executions")
 	flag.StringVar(&outFile, "out", "", "Output file, gets truncated on start")
 	flag.StringVar(&probeId, "probeid", hostname, "Probe ID")
+	flag.BoolVar(&stdout, "stdout", false, "use stdout as outfile, prefix with [RESULT]")
 }
 
 // This is hack and very inefficient
@@ -152,6 +155,10 @@ func apiCollect(
 		return nil, err
 	}
 	file.WriteString("\n")
+
+	if stdout {
+		fmt.Printf("[RESULT] %s\n", string(encoded))
+	}
 
 	return starlark.None, nil
 }
