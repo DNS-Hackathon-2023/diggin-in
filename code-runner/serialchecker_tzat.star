@@ -19,11 +19,12 @@ def loop():
         # Compare the current serial number with the previously stored serial number
         if found_serial and found_serial != serial:
             # If the serial numbers don't match, print the new serial number and the tzat server
-            result={}
-            result['event']="Serial-Change"
-            result['new_serial']=serial
-            result['old_serial']=found_serial
-            result['server']=tzat_server
+            result = {
+                'event': "Serial-Change",
+                'new_serial': serial,
+                'old_serial': found_serial,
+                'server': com_server
+            }
             collect(result)
         else:
             # If the serial numbers match or no previous serial number exists, update the stored serial number
