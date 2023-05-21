@@ -18,6 +18,7 @@ var (
 	// Server URL
 	serverURL       string
 	programFilename string
+	digCmd          string
 )
 
 var (
@@ -29,6 +30,7 @@ var (
 func init() {
 	flag.StringVar(&serverURL, "server", "", "Server URL")
 	flag.StringVar(&programFilename, "program", "/tmp/remote-code", "Program filename")
+	flag.StringVar(&digCmd, "dig", "dig", "the dig command")
 }
 
 // Get the current program ID
@@ -118,7 +120,11 @@ func readProgramOutput(out io.ReadCloser) {
 func spawnProgram(filename string, stop chan bool) {
 	for {
 		log.Println("starting program")
-		cmd := exec.Command("../code-runner/code-runner", "-script", filename, "-out", "/tmp/code-runner.out", "-stdout")
+		cmd := exec.Command(
+			"../code-runner/code-runner",
+			"-script", filename, "-out", "/tmp/code-runner.out",
+			"-dig", digCmd,
+			"-stdout")
 		cmd.Stderr = os.Stderr
 
 		// Pipe stdout and handle output

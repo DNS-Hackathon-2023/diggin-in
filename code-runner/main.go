@@ -37,6 +37,7 @@ var (
 	outFile    string
 	probeId    string
 	stdout     bool
+	digCmd     string
 )
 
 func starlibLoader(module string) (dict starlark.StringDict, err error) {
@@ -82,6 +83,7 @@ func init() {
 	flag.StringVar(&outFile, "out", "", "Output file, gets truncated on start")
 	flag.StringVar(&probeId, "probeid", hostname, "Probe ID")
 	flag.BoolVar(&stdout, "stdout", false, "use stdout as outfile, prefix with [RESULT]")
+	flag.StringVar(&digCmd, "dig", "dig", "dig command to use")
 }
 
 // This is hack and very inefficient
@@ -166,7 +168,7 @@ func apiCollect(
 func execDigVerbose(thread *starlark.Thread, args string) (starlark.Value, error) {
 	argv := strings.Split(args, " ")
 
-	dig := exec.Command("dig", argv...)
+	dig := exec.Command(digCmd, argv...)
 	jc := exec.Command("jc", "--dig")
 
 	rx, tx := io.Pipe()
