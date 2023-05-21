@@ -18,11 +18,6 @@ func startServer(listen string) error {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	/*
-		e.GET("/", func(c echo.Context) error {
-			return c.String(http.StatusOK, "Hello, World!")
-		})
-	*/
 	e.POST("/program", apiProgramSave)
 	e.GET("/program", apiProgramGet)
 	e.GET("/program/id", apiProgramGetID)

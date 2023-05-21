@@ -41,7 +41,6 @@ function connectResults() {
     uri = "wss:";
   }
   uri += "//" + loc.host + "/results";
-  console.log(uri);
   const socket = new WebSocket(uri);
   return socket;
 }
@@ -105,6 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const btnSave = document.getElementById('btn-save');
   btnSave.addEventListener('click', async () => {
     await saveProgram(editor);
+    outputRoot.innerHTML = '';
   });
 
   let outputRoot = document.getElementById('output');

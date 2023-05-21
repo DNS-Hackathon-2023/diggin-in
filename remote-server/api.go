@@ -70,3 +70,9 @@ func apiResultsStream(c echo.Context) error {
 	}).ServeHTTP(c.Response(), c.Request())
 	return nil
 }
+
+// Show the current server version
+func apiVersion(c echo.Context) error {
+	version := "0.0.1"
+	return c.String(200, version)
+}
