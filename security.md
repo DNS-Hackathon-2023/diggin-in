@@ -28,3 +28,12 @@ Restrictions set on host should be calculated (at a healthy a safety marigin) wi
 
 - global restrictions to prevent DDOS is not in scope at this time, but may be relevant if fleet based test suites are deployed. This requires some sort of orchestration.
 - a public list of known hosts may be either helpful or harmful, as it can be used by network admins to generate white-/black-lists as well as by malicious parties to find vulnerable implementations. Also out of scope at this time.
+
+
+# Implementation notes
+
+- starlark-go provides `thread.SetMaxExecutionSteps` to limit CPU usage of starlark script
+
+- no way in starlark-go to restrict memory usage (other than as a side-effect of limiting CPU usage)
+
+- command-line arguments to `dig` are (currently) unrestrictec, which gives starlark scripts access to arbitrary ports and IP addresses, and ask dig to try reading arbitrary files
