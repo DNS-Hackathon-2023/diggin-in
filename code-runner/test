@@ -1,0 +1,3 @@
+{"timestamp":"2023-05-21T11:33:07.94221551Z","probe_id":"IntrepidUnicorn","result":{"event":"Serial-Change","new_serial":"1684668787","old_serial":"1684668776","server":"shale.dotat.at."},"tag":""}
+{"timestamp":"2023-05-21T11:33:08.09381697Z","probe_id":"IntrepidUnicorn","result":{"event":"Serial-Change","new_serial":"1684668786","old_serial":"1684668776","server":"ns1.mythic-beasts.com."},"tag":""}
+{"timestamp":"2023-05-21T11:33:08.140025874Z","probe_id":"IntrepidUnicorn","result":{"event":"Serial-Change","new_serial":"1684668786","old_serial":"1684668776","server":"ns2.mythic-beasts.com."},"tag":""}
