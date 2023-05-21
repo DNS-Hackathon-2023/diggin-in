@@ -1,7 +1,7 @@
-
 def loop():
     zone="com"
-    dns_results = measure.dig('NS com @8.8.8.8')
+    #zone="tz.dotat.at"
+    dns_results = measure.dig('NS '+ zone +' @8.8.8.8')
     auth_servers = extract_ns_servers(dns_results)
     # Loop through each com server
     for auth_server in auth_servers:
@@ -52,7 +52,12 @@ def extract_serial(dns_results):
 def extract_ns_servers(dns_results):
     # Check if there is only one DNS result
     if len(dns_results) == 1:
-        authorities = dns_results[0]['answer']
+        authorities = None
+        if "answer" in dns_results[0]:
+            authorities = dns_results[0]['answer']
+        elif "authority" in dns_results[0]:
+            authorities = dns_results[0]['authority']
+      
         ns_servers = []
 
         # Iterate over the authority records
