@@ -11,9 +11,9 @@ import (
 	sldataframe "github.com/qri-io/starlib/dataframe"
 	slbase64 "github.com/qri-io/starlib/encoding/base64"
 	slcsv "github.com/qri-io/starlib/encoding/csv"
+	slyaml "github.com/qri-io/starlib/encoding/yaml"
 	slhash "github.com/qri-io/starlib/hash"
 	slre "github.com/qri-io/starlib/re"
-	slyaml "github.com/qri-io/starlib/encoding/yaml"
 
 	slJSON "go.starlark.net/lib/json"
 	slmath "go.starlark.net/lib/math"
@@ -36,40 +36,6 @@ var (
 	outFile    string
 	probeId    string
 )
-
-func starlibLoader(module string) (dict starlark.StringDict, err error) {
-	switch module {
-	case "base64":
-		return slbase64.LoadModule()
-	case "csv":
-		return slcsv.LoadModule()
-	case "dataframe":
-		return starlark.StringDict{"dataframe": sldataframe.Module}, nil
-	case "hash":
-		return slhash.LoadModule()
-	case "math":
-		return starlark.StringDict{"math": slmath.Module}, nil
-	case "re":
-		return slre.LoadModule()
-	case "time":
-		return starlark.StringDict{"time": sltime.Module}, nil
-	case "yaml":
-		return slyaml.LoadModule()
-	}
-
-	return nil, fmt.Errorf("invalid module %q", module)
-}
-
-func starlibModule(name string) *starlarkstruct.Module {
-	dict, err := starlibLoader(name)
-	if err != nil {
-		log.Fatalf("error: %v", err)
-	}
-	return &starlarkstruct.Module{
-		Name:    name,
-		Members: dict,
-	}
-}
 
 func init() {
 	// Get current hostname
@@ -276,6 +242,52 @@ func apiStateGet(
 	return value.(starlark.Value), nil
 }
 
+func loadModule(module string, loader func() (starlark.StringDict, error)) starlark.Value {
+	dict, err := loader()
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+	return dict[module]
+}
+
+func libraryModule(module string) starlark.Value {
+	switch module {
+	case "base64":
+		return loadModule(module, slbase64.LoadModule)
+	case "csv":
+		return loadModule(module, slcsv.LoadModule)
+	case "dataframe":
+		return sldataframe.Module
+	case "hash":
+		return loadModule(module, slhash.LoadModule)
+	case "math":
+		return slmath.Module
+	case "measure":
+		return &starlarkstruct.Module{
+			Name: module,
+			Members: starlark.StringDict{
+				"dig": starlark.NewBuiltin("dig", apiDig),
+			},
+		}
+	case "re":
+		return loadModule(module, slre.LoadModule)
+	case "state":
+		return &starlarkstruct.Module{
+			Name: module,
+			Members: starlark.StringDict{
+				"get": starlark.NewBuiltin("get", apiStateGet),
+				"set": starlark.NewBuiltin("set", apiStateSet),
+			},
+		}
+	case "time":
+		return sltime.Module
+	case "yaml":
+		return loadModule(module, slyaml.LoadModule)
+	}
+	log.Fatalf("invalid module %q", module)
+	return nil
+}
+
 func main() {
 	flag.Parse()
 	if scriptFile == "" {
@@ -302,24 +314,7 @@ func main() {
 	thread.SetLocal("state", map[string]interface{}{})
 
 	// Globals
-	var modMeasure = &starlarkstruct.Module{
-		Name: "measure",
-		Members: starlark.StringDict{
-			"dig": starlark.NewBuiltin("dig", apiDig),
-		},
-	}
-
-	var modState = &starlarkstruct.Module{
-		Name: "state",
-		Members: starlark.StringDict{
-			"get": starlark.NewBuiltin("get", apiStateGet),
-			"set": starlark.NewBuiltin("set", apiStateSet),
-		},
-	}
-
 	env := starlark.StringDict{
-		"measure": modMeasure,
-		"state":   modState,
 		"collect": starlark.NewBuiltin("collect", apiCollect),
 	}
 	for _, mod := range []string{
@@ -329,11 +324,13 @@ func main() {
 		"dataframe",
 		"hash",
 		"math",
+		"measure",
 		"re",
+		"state",
 		"time",
 		"yaml",
 	} {
-		env[mod] = starlibModule(mod)
+		env[mod] = libraryModule(mod)
 	}
 
 	if scriptFile == "" {
