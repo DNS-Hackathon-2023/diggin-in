@@ -24,6 +24,7 @@ Restrictions set on host should be calculated (at a healthy a safety marigin) wi
 - CPU usage and memory usage should be restricted on individual tests, as well as on the total resources consumed.
 - execution time and scheduling timeframe should be restricted on individual tests to prevent congestion.
 - number of simultaneous tests during any given timeframe shuld be restricted with the maximum consumed resources per test in mind.
+- Maybe implementing a Atlas-like credis system is a good idea...
 
 - host environment and application should be hardened and tests isolated to prevent cross contamination of data, as well as execution of code outside the sandbox.
 - access to host should be restricted.

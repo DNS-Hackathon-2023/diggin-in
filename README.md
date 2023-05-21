@@ -1,6 +1,6 @@
 # Digging In
 
-A tongue in check word play to define a Domain Specific Language for meta measurements in the DNS (for now)
+A tongue in cheek word play to define a Domain Specific Language for meta measurements in the DNS (for now)
 
 ## Introduction
 
@@ -31,6 +31,8 @@ Raffaele use-case: useful for domains under attack
 ### Define an experiment to define where an authorative nameserver operator might need to place a new anycast node
 
 From Vicky Risk
+
+See also existing research by SIDN https://github.com/SIDN/BGP-Anycast-Tuner
 
 ### Distributed monitoring for specific domain record
 

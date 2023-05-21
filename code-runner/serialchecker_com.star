@@ -29,7 +29,13 @@ def loop():
         # Compare the current serial number with the previously stored serial number
         if found_serial and found_serial != serial:
             # If the serial numbers don't match, print the new serial number and the com server
-            print(serial + " @ " + com_server)
+            result = {
+                'event': "Serial-Change",
+                'new_serial': serial,
+                'old_serial': found_serial,
+                'server': com_server
+            }
+            collect(result)
         else:
             # If the serial numbers match or no previous serial number exists, update the stored serial number
             state.set(com_server, serial)
