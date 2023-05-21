@@ -60,7 +60,11 @@ func apiResultsPublish(c echo.Context) error {
 func apiResultsStream(c echo.Context) error {
 	websocket.Handler(func(ws *websocket.Conn) {
 		defer ws.Close()
-		for body := range broadcastResults {
+		results := make(chan []byte)
+		subscribeResults(results)
+		defer unsubscribeResults(results)
+
+		for body := range results {
 			err := websocket.Message.Send(ws, string(body))
 			if err != nil {
 				log.Println(err)
@@ -69,10 +73,4 @@ func apiResultsStream(c echo.Context) error {
 		}
 	}).ServeHTTP(c.Response(), c.Request())
 	return nil
-}
-
-// Show the current server version
-func apiVersion(c echo.Context) error {
-	version := "0.0.1"
-	return c.String(200, version)
 }

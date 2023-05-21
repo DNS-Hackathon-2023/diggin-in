@@ -9,6 +9,31 @@ import (
 
 // Results channel
 var broadcastResults = make(chan []byte, 1000)
+var subscribers = make([]chan []byte, 0)
+
+// Broadcast results to all subscribers
+func startBroadcastResults() {
+	for result := range broadcastResults {
+		for _, subscriber := range subscribers {
+			subscriber <- result
+		}
+	}
+}
+
+func subscribeResults(ch chan []byte) {
+	subscribers = append(subscribers, ch)
+}
+
+func unsubscribeResults(ch chan []byte) {
+	newSubscribers := make([]chan []byte, 0)
+	for _, subscriber := range subscribers {
+		if subscriber == ch {
+			continue
+		}
+		newSubscribers = append(newSubscribers, subscriber)
+	}
+	subscribers = newSubscribers
+}
 
 func startServer(listen string) error {
 	// Start httprouter server
@@ -25,6 +50,8 @@ func startServer(listen string) error {
 	e.POST("/results", apiResultsPublish)
 
 	e.Static("/", "ui/build")
+
+	go startBroadcastResults()
 
 	return e.Start(listen)
 }
