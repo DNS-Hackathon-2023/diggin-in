@@ -13,6 +13,8 @@ root_servers = [
     "m.root-servers.net"
 ]
 
+load("primitives.star", "extract_ns_servers")
+
 def loop():
     # Initialize ns_servers with root_servers
     ns_servers = root_servers
@@ -40,23 +42,4 @@ def loop():
     
     return None  # Return None if the loop completes without finding a result
 
-
-def extract_ns_servers(dns_results):
-    # print(dns_results)
-    
-    # Check if there is only one DNS result
-    if len(dns_results) == 1:
-        authorities = dns_results[0]['authority']
-        ns_servers = []
-        
-        # Iterate over the authority records
-        for authority in authorities:
-            # Check if the record type is "NS" (Nameserver)
-            if authority['type'] == "NS":
-                ns_records = authority['data']
-                ns_servers.append(ns_records)
-        
-        return ns_servers  # Return the extracted nameservers
-    
-    return None  # Return None if the extraction fails
 
