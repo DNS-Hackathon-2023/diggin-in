@@ -73,3 +73,14 @@ We found the Starlark language which is a subset of Python. It addresses a few t
 
 # By-catch
 You could use something similar to this but without the measurement code, ie. just define the data reduction step
+
+# Caveats
+The DNS thought use cases don't work because their measurement server returns an invalid LCLS Extended option that dig 9.18 generates an error that jc can't parse
+
+```
+dig A secure.d2a3n1.rootcanary.net | jc --dig
+jc:  Error - dig parser could not parse the input data.
+             If this is the correct parser, try setting the locale to C
+                 (LC_ALL=C).
+             For details use the -d or -dd option. Use "jc -h --dig" for help.
+```
