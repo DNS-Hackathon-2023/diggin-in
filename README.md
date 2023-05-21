@@ -2,6 +2,10 @@
 
 A tongue in cheek word play to define a Domain Specific Language for meta measurements in the DNS (for now)
 
+## prototype not ready for production
+
+Nothing valued is here. What is here was dangerous and repulsive to us. This message is a warning about danger.
+
 ## Introduction
 
 We all have worked with RIPE Atlas and other measurements platforms, open and semi-closed, and ended up doing the same boilerplate of setting up core measurements on a regular basis with a set of probes, until the monitoring period ends or the expected situation materializes.
