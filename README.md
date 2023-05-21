@@ -2,6 +2,10 @@
 
 A tongue in cheek word play to define a Domain Specific Language for meta measurements in the DNS (for now)
 
+## prototype not ready for production
+
+Nothing valued is here. What is here was dangerous and repulsive to us. This message is a warning about danger.
+
 ## Introduction
 
 We all have worked with RIPE Atlas and other measurements platforms, open and semi-closed, and ended up doing the same boilerplate of setting up core measurements on a regular basis with a set of probes, until the monitoring period ends or the expected situation materializes.
@@ -69,3 +73,14 @@ We found the Starlark language which is a subset of Python. It addresses a few t
 
 # By-catch
 You could use something similar to this but without the measurement code, ie. just define the data reduction step
+
+# Caveats
+The DNS thought use cases don't work because their measurement server returns an invalid LCLS Extended option that dig 9.18 generates an error that jc can't parse
+
+```
+dig A secure.d2a3n1.rootcanary.net | jc --dig
+jc:  Error - dig parser could not parse the input data.
+             If this is the correct parser, try setting the locale to C
+                 (LC_ALL=C).
+             For details use the -d or -dd option. Use "jc -h --dig" for help.
+```
