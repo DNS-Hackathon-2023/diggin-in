@@ -15,7 +15,7 @@ def extract_serial(dns_results):
 
                 # Check if the SOA record has the expected number of parts
                 if len(soa_parts) == 7:
-                    serial = soa_parts[3]
+                    serial = soa_parts[2]
                     return serial
 
     # Return None if the serial number extraction fails
